@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     Request request(data);
     cout << "Request(\n"
          << "  method = " << request.method << "\n"
-         << "  resource = " << request.resource << "\n"
+         << "  resource = '" << request.resource << "'\n"
          << "  version_major = " << request.version_major << "\n"
          << "  version_minor = " << request.version_minor << "\n"
          << "  headers = {\n";

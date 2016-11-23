@@ -30,6 +30,9 @@ private:
   // delimiter). Consumes the delimiter. Throws BadRequest if the delimiter is
   // not found.
   std::string readTo(const std::string &delimiter);
+
+  // Returns `s` if it contains only valid characters, else throws BadRequest
+  std::string validCharacters(const std::string &s);
 };
 
 struct BadRequest: public std::exception {

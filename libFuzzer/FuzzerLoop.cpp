@@ -465,8 +465,10 @@ void Fuzzer::RunOneAndUpdateCorpus(const uint8_t *Data, size_t Size) {
     return;
   if (RunOne(Data, Size) && !Options.Benchmark) {
     ReportNewCoverage({Data, Data + Size});
-    auto KidHash = Hash({Data, Data + Size});
-    Printf("ANCESTRY: %s -> %s\n", ParentHash.c_str(), KidHash.c_str());
+    Printf("Parent testcase (%2d byte(s)): |", ParentUnit.size());
+    PrintASCII(ParentUnit, "|\n");
+    Printf("Child  testcase (%2d byte(s)): |", Size);
+    PrintASCII(Data, Size, "|\n");
   }
 }
 
@@ -668,7 +670,7 @@ void Fuzzer::MutateAndTestOne() {
   assert(CurrentUnitData);
   size_t Size = U.size();
   assert(Size <= Options.MaxLen && "Oversized Unit");
-  ParentHash = Hash(U);
+  ParentUnit = U;
   memcpy(CurrentUnitData, U.data(), Size);
 
   for (int i = 0; i < Options.MutateDepth; i++) {

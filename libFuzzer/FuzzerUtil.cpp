@@ -39,14 +39,10 @@ void Print(const Unit &v, const char *PrintAfter) {
 }
 
 void PrintASCIIByte(uint8_t Byte) {
-  if (Byte == '\\')
-    Printf("\\\\");
-  else if (Byte == '"')
-    Printf("\\\"");
-  else if (Byte >= 32 && Byte < 127)
+  if (Byte >= 32 && Byte < 127)
     Printf("%c", Byte);
   else
-    Printf("\\x%02x", Byte);
+    Printf(".");
 }
 
 void PrintASCII(const uint8_t *Data, size_t Size, const char *PrintAfter) {

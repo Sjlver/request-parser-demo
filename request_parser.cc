@@ -12,7 +12,7 @@ Request::Request(const string& data) : data(data), pos(0) {
   readString(" ");
 
   // Next follows resource and version: "/index.html HTTP/1.1"
-  resource = readTo(" ");
+  resource = validCharacters(readTo(" "));
   readString("HTTP/");
   version_major = readDigit();
   readString(".");
@@ -21,8 +21,8 @@ Request::Request(const string& data) : data(data), pos(0) {
 
   // Read headers of the form "Accept-language: en"
   while (pos < data.size()) {
-    string key = readTo(": ");
-    string value = readTo("\r\n");
+    string key = validCharacters(readTo(": "));
+    string value = validCharacters(readTo("\r\n"));
     headers[key] = value;
   }
 
@@ -32,7 +32,7 @@ Request::Request(const string& data) : data(data), pos(0) {
   }
 }
 
-std::string Request::readString(const string &s) {
+string Request::readString(const string &s) {
   if (data.substr(pos, s.size()) == s) {
     pos += s.size();
     return s;
@@ -49,7 +49,7 @@ int Request::readDigit() {
   throw BadRequest("Expected a digit");
 }
 
-std::string Request::readTo(const string &delimiter) {
+string Request::readTo(const string &delimiter) {
   size_t endpos = data.find(delimiter, pos);
   if (endpos != data.npos) {
     size_t startpos = pos;
@@ -57,4 +57,13 @@ std::string Request::readTo(const string &delimiter) {
     return data.substr(startpos, endpos - startpos);
   }
   throw BadRequest("Expected the delimiter '" + delimiter + "'");
+}
+
+string Request::validCharacters(const string &s) {
+  for (auto c : s) {
+    if (c < '!' || c > 'z') {
+      throw BadRequest("Illegal character in URL");
+    }
+  }
+  return s;
 }
